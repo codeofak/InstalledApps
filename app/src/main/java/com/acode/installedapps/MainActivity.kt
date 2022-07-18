@@ -35,7 +35,8 @@ class MainActivity : ComponentActivity() {
                     val context = LocalContext.current
 
                     val listApps = installedApps()
-                    val lstAppsA = installedAppsA(context)
+                    val listAppsA = installedAppsA(context)
+                    val listAppsB = installedAppsB()
                     //var listOfAppsName: List<String> = emptyList()
                     val listLabel: MutableList<String> = mutableListOf()
                     listApps.forEach {
@@ -44,10 +45,15 @@ class MainActivity : ComponentActivity() {
 
 
                     LazyColumn {
-                        items(lstAppsA){
+                        items(listAppsA){
+                              //for listOfApps
                             //Text(text = it.applicationInfo.loadLabel(packageManager).toString())
-                            //Text(text = it.applicationInfo.loadLabel(packageManager).toString())
-                            Text(text = it.loadLabel(packageManager).toString())
+
+                              // for InstalledAppsA()
+                            Text(text = it.activityInfo.loadLabel(packageManager).toString())
+
+                              // for listOfAppsB
+                            //Text(text = it)
                             Divider()
                         }
                     }
@@ -66,7 +72,21 @@ class MainActivity : ComponentActivity() {
     fun installedAppsA(context: Context): MutableList<ResolveInfo> {
         val intent = Intent(Intent.ACTION_MAIN, null)
         intent.addCategory(Intent.ACTION_APPLICATION_PREFERENCES)
+
         return context.packageManager.queryIntentActivities(intent, 0)
+    }
+
+
+    //METHOD:2: Not working
+    fun installedAppsB(): List<String> {
+        val pm = packageManager
+        val installedApps = pm.getInstalledApplications(0)
+        var appList = emptyList<String>()
+        
+        for (aInfo in installedApps) {
+            appList += aInfo.loadLabel(pm).toString()
+        }
+        return appList
     }
 
 }
