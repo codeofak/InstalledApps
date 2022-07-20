@@ -3,7 +3,6 @@ package com.acode.installedapps
 import android.content.Context
 import android.content.Intent
 import android.content.pm.ApplicationInfo
-import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.content.pm.ResolveInfo
 import android.os.Build
@@ -39,20 +38,27 @@ class MainActivity : ComponentActivity() {
                     val listAppsB = installedAppsB()
                     //var listOfAppsName: List<String> = emptyList()
                     val listLabel: MutableList<String> = mutableListOf()
+
+                    //Method 3 ----Working Good
+                    val listAppsC = listAppsC(context)
+
                     listApps.forEach {
                         listLabel += packageManager.getApplicationLabel(it).toString()
                     }
 
 
                     LazyColumn {
-                        items(listAppsA){
-                              //for listOfApps
+                        items(listAppsC) {
+                            //for listOfApps
                             //Text(text = it.applicationInfo.loadLabel(packageManager).toString())
 
-                              // for InstalledAppsA()
-                            Text(text = it.activityInfo.loadLabel(packageManager).toString())
+                            // for InstalledAppsA()
+                            //Text(text = it.activityInfo.loadLabel(packageManager).toString())
 
-                              // for listOfAppsB
+                            //for listAppsC
+                            Text(text = it)
+
+                            // for listOfAppsB
                             //Text(text = it)
                             Divider()
                         }
@@ -68,6 +74,7 @@ class MainActivity : ComponentActivity() {
         return packageManager.getInstalledApplications(PackageManager.GET_META_DATA)
 
     }
+
     @RequiresApi(Build.VERSION_CODES.N)
     fun installedAppsA(context: Context): MutableList<ResolveInfo> {
         val intent = Intent(Intent.ACTION_MAIN, null)
@@ -82,11 +89,28 @@ class MainActivity : ComponentActivity() {
         val pm = packageManager
         val installedApps = pm.getInstalledApplications(0)
         var appList = emptyList<String>()
-        
+
         for (aInfo in installedApps) {
             appList += aInfo.loadLabel(pm).toString()
         }
         return appList
+    }
+
+    //MEtHOD: 3 ---- Working good
+    fun listAppsC(context: Context): List<String> {
+        val appInfoList = packageManager.getInstalledApplications(PackageManager.GET_META_DATA)
+
+        var string: List<String> = emptyList()
+
+        appInfoList.forEach {
+            if (context.getPackageManager().getLaunchIntentForPackage(it.packageName) != null){
+
+                string = string.plus(it.loadLabel(packageManager).toString())
+            }
+
+        }
+        return string
+
     }
 
 }
