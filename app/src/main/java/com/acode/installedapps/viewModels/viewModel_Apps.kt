@@ -2,12 +2,10 @@ package com.acode.installedapps.viewModels
 
 import android.content.Context
 import android.content.pm.PackageManager
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 
 
-class ViewModelApps() : ViewModel() {
+class ViewModelApps : ViewModel() {
 
 
     fun listAppsC(context: Context): List<String> {
