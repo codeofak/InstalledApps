@@ -5,24 +5,28 @@ import android.content.Context
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.viewModelScope
+import com.acode.installedapps.dataClass.AppClass
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.launch
 
 
 class ViewModelApps(application: Application) : AndroidViewModel(application) {
 
     private val context = getApplication<Application>()
 
+    //List of All Installed Packages
     private val _listOfApps = MutableStateFlow<List<ApplicationInfo>>(emptyList())
     val listOfApps = _listOfApps.asStateFlow()
 
+    //list of Installed apps as of AppClass dataClass
+    private val _listOfAppsB = MutableStateFlow<List<AppClass>>(emptyList())
+    val listOfAppsB = _listOfAppsB.asStateFlow()
+
 
     init {
-        viewModelScope.launch {
-            loadAppPackages(context)
-        }
+
+        loadAppPackages(context)
+
     }
 
 
@@ -33,12 +37,21 @@ class ViewModelApps(application: Application) : AndroidViewModel(application) {
             emptyList<ApplicationInfo>()
                 .toMutableList()
 
+        val list: MutableList<AppClass> = mutableListOf()
+
         packages.forEach {
             if (pm.getLaunchIntentForPackage(it.packageName) != null) {
                 appPackages += it
+                list += AppClass(
+                    name = it.loadLabel(pm).toString(),
+                    icon = it.loadIcon(pm),
+                    packageName = it.packageName
+                )
 
             }
         }
+
+        _listOfAppsB.value = list
 
         _listOfApps.value = appPackages
     }

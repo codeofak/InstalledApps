@@ -1,3 +1,5 @@
+@file:Suppress("OPT_IN_IS_NOT_ENABLED")
+
 package com.acode.installedapps
 
 import android.content.Context
@@ -32,6 +34,7 @@ import com.acode.installedapps.ui.theme.InstalledAppsTheme
 import com.acode.installedapps.viewModels.ViewModelApps
 import kotlinx.coroutines.launch
 
+
 class MainActivity : ComponentActivity() {
     @RequiresApi(Build.VERSION_CODES.N)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -61,8 +64,9 @@ fun ListOfApps(context: Context, viewModelApps: ViewModelApps) {
 
     val pm = context.packageManager
     //Getting List of installed Packages from viewModelApp
-    val appPackages = viewModelApps.listOfApps.collectAsState().value
+    //val appPackages = viewModelApps.listOfApps.collectAsState().value
 
+    val list = viewModelApps.listOfAppsB.collectAsState().value
 
     val coroutineScope = rememberCoroutineScope()
 
@@ -71,10 +75,12 @@ fun ListOfApps(context: Context, viewModelApps: ViewModelApps) {
     Surface {
 
         LazyColumn(
+            //LazyVerticalGrid(
             modifier = Modifier.padding(start = 4.dp, end = 4.dp),
-            state = rememberLazyListState()
+            state = rememberLazyListState(),
+            //cells = GridCells.Adaptive(minSize = 128.dp)
         ) {
-            items(appPackages) {
+            items(list) {
 
                 Row(
                     modifier = Modifier
@@ -101,7 +107,7 @@ fun ListOfApps(context: Context, viewModelApps: ViewModelApps) {
                     //App Icon
                     Image(
                         modifier = Modifier.size(48.dp),
-                        painter = rememberAsyncImagePainter(model = it.loadIcon(pm),
+                        painter = rememberAsyncImagePainter(model = it.icon,//loadIcon(pm),
                             filterQuality = FilterQuality.Low),
                         contentDescription = "App Icon"
                     )
@@ -110,7 +116,7 @@ fun ListOfApps(context: Context, viewModelApps: ViewModelApps) {
 
                     //App Label
                     Text(
-                        text = it.loadLabel(context.packageManager).toString(),
+                        text = it.name,//loadLabel(context.packageManager).toString(),
                         overflow = TextOverflow.Ellipsis
 
                     )
